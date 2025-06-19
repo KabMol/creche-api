@@ -37,6 +37,12 @@
 //   console.log(`Server running on http://localhost:${process.env.PORT}`);
 // });
 
+//  npm init -y
+// npm install express mongodb dotenv cors
+// nodemon server.js
+// node server.js     
+
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -66,6 +72,20 @@ async function startServer() {
       } catch (err) {
         console.error("❌ Error fetching team:", err);
         res.status(500).send("Error fetching team");
+      }
+    });
+
+      app.get('/api/events', async (req, res) => {
+      try {
+        console.log("📥 Fetching /api/events...");
+        const events = await db.collection("events")
+          .find({})
+          .sort({ date: 1 }) // Soonest first
+          .toArray();
+        res.json(events);
+      } catch (err) {
+        console.error("❌ Error fetching events:", err);
+        res.status(500).send("Internal server error");
       }
     });
 
